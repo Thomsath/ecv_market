@@ -1,16 +1,25 @@
 var items = [];
-	// document.getElementsByClassName('addToCart').addEventListener("click", function() {
-	// 	console.log('lolol');
-	// });
+
+/**
+ * Show cart
+ */
 function showMenu() {
 	const current_cart = document.getElementById('cart');
 	if(current_cart.style.visibility === "visible") {
+		// Rétracte menu
         current_cart.style.visibility = 'hidden';
     } else {
+		// Montre le menu
         current_cart.style.visibility = 'visible';
+
     }
 
 }
+
+/**
+ * Change product image
+ * @param product_id
+ */
 function changeImg(product_id) {
 	const current_product = document.getElementById(product_id);
     var current_product_color = current_product.getElementsByClassName('product_color')[0].value;
@@ -29,31 +38,31 @@ function changeImg(product_id) {
 
 
 }
+
+/**
+ * Add the current ID  to cart
+ * @param product_id
+ * @returns {boolean}
+ */
 function addToLocalStorage(product_id) {
 	const current_product_name = document.getElementById(product_id).getElementsByClassName('product_name')[0].textContent;
 	const current_product_quantity = document.getElementById(product_id).getElementsByClassName('product_quantity')[0].value;
 	const current_product_price = document.getElementById(product_id).getElementsByClassName('product_price')[0].textContent;
 	const current_product_color = document.getElementById(product_id).getElementsByClassName('product_color')[0].value;
-	const current_product_id = document.getElementById(product_id).getElementsByClassName('product_id')[0].value;
+	const current_product_id = document.getElementById(product_id).getElementsByClassName('product_id')[0].value + '-' + current_product_color + '-cart';
 
 	//Test if product already in cart
 	if(alreadyInCart(current_product_id, current_product_quantity, current_product_color)) {
 		console.log('quantity : ' + JSON.parse(localStorage.getItem("products"))[0].quantity);
 		return false;
 	}
-
-    // const localStorageParse = JSON.parse(localStorage.getItem('products'));
-	// for (var i = 0; i <= localStorageParse.length; i++) {
-	//
-	// }
-	// Create and object product
 	var product = {
 		name: current_product_name,
 		quantity: current_product_quantity,
 		color: current_product_color,
 		price: current_product_price,
 		id: current_product_id
-	}
+	};
     items.push(product);
     localStorage.setItem("products", JSON.stringify(items));
     //[0].title
@@ -69,7 +78,10 @@ function addToLocalStorage(product_id) {
     	"id" : current_product_id
     });
 }
-
+/**
+ * Add the current element to cart
+ * @param elements
+ */
 function addToCart(elements) {
 	const cart = document.getElementById('cart');
 	
@@ -80,7 +92,7 @@ function addToCart(elements) {
 	// Add new product
 	const new_product = document.createElement('div');
 	new_product.classList.add("cart_product");
-
+    new_product.setAttribute('id', elements.id);
 	for(var key in elements) {
 		if(key !== 'id') {
 			var value = elements[key];
@@ -105,17 +117,30 @@ function addToCart(elements) {
     document.getElementById("menu_cart").classList.add('swing');
 	elt = document.createElement('i');
 	elt.classList.add('fas', 'fa-trash-alt');
+	elt.setAttribute('onclick', 'deleteCurrent("' + elements.id + '")');
 	new_product.appendChild(elt);
 	cart.appendChild(new_product);
+    updateGrandTotal();
 }
 
+/**
+ * Remove the current item
+ * @param current_product_id
+ */
 function deleteCurrent(current_product_id) {
+	const localStorageProductsBackup = JSON.parse(localStorage.products);
+	var i = 0;
     items.forEach(function(element) {
         if(element.id === current_product_id) {
-            // on delete
-            console.log(element);
+			delete localStorageProductsBackup[i];
+			localStorage.removeItem("products");
+            localStorage.setItem("products", JSON.stringify(localStorageProductsBackup));
+            items = localStorageProductsBackup;
         }
+        i++;
     });
+    document.getElementById(current_product_id).remove();
+    updateGrandTotal();
 }
 
 function alreadyInCart(current_product_id, current_product_quantity, current_product_color) {
@@ -143,4 +168,16 @@ function actionNav() {
   } else {
     x.className = "topnav";
   }
+}
+
+function updateGrandTotal() {
+	var total = 0;
+	var price;
+	items.forEach(function(element) {
+		console.log(element.price);
+		price = element.price.replace('€', '');
+		total += parseInt(price);
+	});
+	console.log(total);
+	document.getElementById('grandTotal').innerText = total;
 }
