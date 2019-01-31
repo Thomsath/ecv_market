@@ -9,6 +9,7 @@ body {
 #TopNav {
     display: flex;
     justify-content: flex-end;
+    height: 13vh;
 }
 .grid-container {
   padding: 2em;
@@ -50,13 +51,17 @@ i {
 #cart {
     background-color: white;
     width: 300px;
-    position: absolute;
-    /* left: 58px; */
+    height: 87vh;
     right: 0;
     height: 100vh;
     position: fixed;
     top: 67px;
     visibility: visible;
+}
+#cart-bottom {
+    width: 100%;
+    position: absolute;
+    bottom: 81px;
 }
 
 .topnav a {
