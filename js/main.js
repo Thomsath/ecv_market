@@ -1,7 +1,7 @@
 var items = [];
 
 /**
- * Show cart
+ * Show cart or not
  */
 function showMenu() {
     const current_cart = document.getElementById('cart');
@@ -13,15 +13,6 @@ function showMenu() {
     } else {
         current_cart.classList.add('cart_smooth_on');
 	}
-    // if(current_cart.style.visibility === "visible") {
-    //     // Rétracte menu
-    //     current_cart.style.visibility = 'hidden';
-    // } else {
-    //     // Montre le menu
-    //     current_cart.style.visibility = 'visible';
-	//
-    // }
-
 }
 
 /**
@@ -66,8 +57,6 @@ function addToLocalStorage(product_id) {
     //Test if product already in cart
 
     if(alreadyInCart(current_product_id, current_product_quantity, current_product_color)) {
-        console.log('element déjà dans le panier : ' + current_product_id);
-
         return false;
     }
     var product = {
@@ -80,7 +69,6 @@ function addToLocalStorage(product_id) {
     items.push(product);
     localStorage.setItem("products", JSON.stringify(items));
     //[0].title
-    console.log(JSON.parse(localStorage.getItem('item')));
     var product_title = document.createElement('p');
 
     // Upgrade cart quantity to display
@@ -131,6 +119,8 @@ function addToCart(elements) {
                 elt.setAttribute("id", "select-cart-quantity");
                 elt.setAttribute("data-item", elements.id + "-cart");
                 const options_array = [1, 2, 3, 4, 5];
+
+                // Creation of the select with options
                 for (var i = 0; i < options_array.length; i++) {
                     var option = document.createElement("option");
                     option.value = options_array[i];
@@ -164,28 +154,27 @@ function deleteCurrent(current_product_id) {
     items.forEach(function(element) {
         if(element && element.id === current_product_id) {
         	//  If quantity > than 1, delete on by one
-			console.log(element.quantity);
 
         	if(element.quantity > 1) {
-                console.log(localStorageProductsBackup[i].quantity);
+
                 localStorageProductsBackup[i].quantity -= 1;
                 const currentSelect = document.getElementById(current_product_id).querySelectorAll('[data-item]');
                 for(var j = 0; j < 5; j++) {
-                    // Edit ption selected
+                    // Edit option selected
                     if(currentSelect[0][j].value == element.quantity - 1 ) {
-                    	console.log(element.quantity);
                         currentSelect[0][element.quantity-1].removeAttribute('selected');
                         currentSelect[0][j].setAttribute('selected', 'selected');
                     }
                 }
+                // If quantity equal to 1, delete the current product
 			} else if(element.quantity === 1) {
                 delete localStorageProductsBackup[i];
                 localStorage.removeItem("products");
-                console.log(localStorageProductsBackup);
                 localStorage.setItem("products", JSON.stringify(localStorageProductsBackup));
             }
             items = localStorageProductsBackup
         }
+        // If quantity is null, remove the dom element
         if(element && element.quantity - 1 === 0 ) {
             document.getElementById(current_product_id).remove();
         }
@@ -193,6 +182,11 @@ function deleteCurrent(current_product_id) {
     });
     updateGrandTotal();
 }
+
+/**
+ * Change the quantity when selecting value in cart
+ * @param current_product_id
+ */
 function changeQuantitySelect(current_product_id) {
 	items.forEach(function(element) {
 		if(element.id === current_product_id) {
@@ -246,7 +240,6 @@ function actionNav() {
 }
 
 function updateGrandTotal() {
-	console.log('update total');
     var total = 0;
     var price;
     items.forEach(function(element) {
