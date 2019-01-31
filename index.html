@@ -12,17 +12,17 @@
 
 </head>
 <body>
-<div class="layer">
+
 	<nav class="topnav" id="TopNav">
 		<a href="#" id="menu_cart" onclick="showMenu()">
-            <i class="fas fa-shopping-bag"></i>
+            <i class="fas fa-shopping-bag"></i><span class="cart_quantity" id="cart_quantity">0</span>
         </a>
 		<a href="javascript:void(0);" class="icon" onclick="actionNav()">
 			<i class="fa fa-bars"></i>
 		</a>
 	</nav>
 
-	<div id="cart">
+	<div id="cart" class="cart_smooth_off">
 		<p id="empty_cart_msg">Votre panier est vide.</p>
         <div id="cart-bottom">
             <hr>
@@ -30,6 +30,7 @@
             <button type="submit" onclick="sendData()">Envoyer</button>
         </div>
 	</div>
+    <div class="layer"></div>
 	<main class="grid-container">
 
 		<!-- ///// PRODUCT 1 //// -->
@@ -162,6 +163,5 @@
             threshold: 200
         });</script>
 	</footer>
-</div>
 </body>
 </html>
